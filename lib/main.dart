@@ -1,3 +1,4 @@
+import 'package:bill_splitter/Dialogs/DialogAddPerson.dart';
 import 'package:bill_splitter/Widgets/UserList.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
+
   final String title;
 
   @override
@@ -28,7 +30,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<String> peopleAdded = ["heyasd", "hey qeu asd", "dasdada"];
-  String newPersonName = "";
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: UserList(peopleAdded),
       ),
       floatingActionButton: FloatingActionButton(
+        // onPressed: _showAddPeopleDialog,
         onPressed: _showAddPeopleDialog,
         tooltip: 'Add new people',
         child: Icon(Icons.add),
@@ -49,36 +51,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _showAddPeopleDialog() {
     showDialog(
-        context: context,
-        builder: (_) => new AlertDialog(
-              content: Container(
-                child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  new Text("Introduce the new person"),
-                  TextField(
-                    onChanged: (text) {
-                      newPersonName = text;
-                    },
-                  ),
-                ],
-              ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text('Nah, passing'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                ElevatedButton(
-                  child: Text('Add person!'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ));
+      context: context,
+      builder: (_) => DialogAddPerson(addPerson),
+    );
+  }
+
+  void addPerson(personNameToAdd) {
+    setState(() {
+      peopleAdded.add(personNameToAdd);  
+    });
   }
 }
