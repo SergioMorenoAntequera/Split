@@ -1,7 +1,6 @@
 import 'package:bill_splitter/Models/Providers/ItemsList.dart';
 import 'package:bill_splitter/Models/Providers/PeopleList.dart';
 import 'package:bill_splitter/Views/ViewItemsList.dart';
-import 'package:bill_splitter/Views/ViewPeopleList.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +11,8 @@ void main() {
         ChangeNotifierProvider(create: (context) => PeopleList([])),
       ],
       child: MyApp(),
-    ),);
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

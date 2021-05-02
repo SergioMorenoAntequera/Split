@@ -1,3 +1,4 @@
+import 'package:bill_splitter/Models/Participation.dart';
 import 'package:bill_splitter/Models/Person.dart';
 
 class Item {
@@ -5,8 +6,7 @@ class Item {
   String name = "";
   double price = 0.0;
 
-  List<Person> payers = [];
-  List<Person> participants = [];
+  List<Participation> participations = [];
 
   Item() {}
   Item.fromBasics(String name, double price) {
