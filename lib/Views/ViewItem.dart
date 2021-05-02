@@ -1,20 +1,27 @@
 import 'package:bill_splitter/Models/Item.dart';
+import 'package:bill_splitter/Models/Person.dart';
 import 'package:bill_splitter/Models/Providers/PeopleList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ViewItem extends StatelessWidget {
+class ViewItem extends StatefulWidget {
   Item item = new Item();
+  Function toggleParticipant;
 
-  ViewItem(this.item, {Key key}) : super(key: key);
+  ViewItem(this.item, this.toggleParticipant, {Key key}) : super(key: key);
 
+  @override
+  _ViewItemState createState() => _ViewItemState();
+}
+
+class _ViewItemState extends State<ViewItem> {
   @override
   Widget build(BuildContext context) {
     final nameController = TextEditingController();
-    nameController.text = item.name;
+    nameController.text = widget.item.name;
     final priceController = TextEditingController();
-    priceController.text = item.price.toString();
+    priceController.text = widget.item.price.toString();
 
     var availablePeople = Provider.of<PeopleList>(context, listen: true);
 
@@ -33,7 +40,6 @@ class ViewItem extends StatelessWidget {
                 keyboardType: TextInputType.number,
                 controller: priceController,
               ),
-              
               Container(
                 alignment: Alignment.centerLeft,
                 child: Text("People involved"),
@@ -45,19 +51,26 @@ class ViewItem extends StatelessWidget {
                   itemCount: availablePeople.list.length,
                   itemBuilder: (context, index) {
                     var person = availablePeople.list[index];
+
                     return ListTile(
                       key: UniqueKey(),
                       title: Text("${person.name}"),
+                      trailing: person.selected
+                          ? Icon(Icons.check)
+                          : Container(child: Text("")),
+                      onTap: () {
+                        setState(() {
+                          person.selected = !person.selected;
+                        });
+                        widget.toggleParticipant(widget.item, person);
+                      },
                     );
                   },
                 ),
               ),
               ElevatedButton(
                 onPressed: () {
-                  item.name = nameController.text;
-                  item.price =
-                      double.parse(nameController.text.replaceAll(",", "."));
-                  Navigator.pop(context);
+                  widget.item.name = nameController.text;
                 },
                 child: Text("Save changes"),
               ),

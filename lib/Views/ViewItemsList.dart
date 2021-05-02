@@ -1,4 +1,7 @@
 import 'package:bill_splitter/Dialogs/DialogAddItem.dart';
+import 'package:bill_splitter/Models/Item.dart';
+import 'package:bill_splitter/Models/Participation.dart';
+import 'package:bill_splitter/Models/Person.dart';
 import 'package:bill_splitter/Models/Providers/ItemsList.dart';
 import 'package:bill_splitter/Views/ViewItem.dart';
 import 'package:bill_splitter/Views/ViewPeopleList.dart';
@@ -23,12 +26,16 @@ class _ViewItemsListState extends State<ViewItemsList> {
         title: Text("Items List"),
         actions: [
           TextButton(
-            onPressed: () { 
+            onPressed: () {
               Navigator.push(
-                context, MaterialPageRoute(builder: (context) => ViewPeopleList()),
+                context,
+                MaterialPageRoute(builder: (context) => ViewPeopleList()),
               );
-              },
-            child: Icon(Icons.person, color: Colors.white,),
+            },
+            child: Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
           )
         ],
       ),
@@ -45,18 +52,35 @@ class _ViewItemsListState extends State<ViewItemsList> {
             onTap: () => {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ViewItem(item)),
+                MaterialPageRoute(
+                    builder: (context) => ViewItem(item, toggleParticipant)),
               ),
             },
           );
         },
-      ),
+      ),  
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddItemDialog,
         tooltip: 'Add new Item',
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  void toggleParticipant(Item baseItem, Person personParticipating) {
+    var newParticipation = Participation.fromPerson(personParticipating);
+    setState(() {
+      
+      var found = baseItem.participations.firstWhere(
+        (e) => e.person.name == personParticipating.name,
+        orElse: () => Participation(),
+      );
+      if(found.person.name != ""){
+        baseItem.participations.remove(found);
+      } else {
+        baseItem.participations.add(newParticipation);
+      }
+    });
   }
 
   void _showAddItemDialog() {
