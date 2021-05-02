@@ -1,8 +1,10 @@
+import 'package:bill_splitter/Models/Person.dart';
+import 'package:bill_splitter/Models/Providers/PeopleList.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DialogAddPerson extends StatefulWidget {
-  Function addPerson;
-  DialogAddPerson(this.addPerson, {Key key}) : super(key: key);
+  DialogAddPerson({Key key}) : super(key: key);
 
   @override
   _DialogAddPersonState createState() => _DialogAddPersonState();
@@ -38,7 +40,7 @@ class _DialogAddPersonState extends State<DialogAddPerson> {
         ElevatedButton(
           child: Text('Add person!'),
           onPressed: () {
-            widget.addPerson(personToAdd);  
+            Provider.of<PeopleList>(context, listen: false).addToList(Person.fromBasics(personToAdd));
             Navigator.of(context).pop();
           },
         ),

@@ -1,5 +1,6 @@
-class Person {
+class Person{
   String name = "";
 
-  Person() {}
+  Person();
+  Person.fromBasics(this.name);
 }

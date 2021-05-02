@@ -1,6 +1,3 @@
-
-import 'dart:ffi';
-
 import 'package:bill_splitter/Models/Person.dart';
 
 class Item {

@@ -1,16 +1,18 @@
-import 'package:bill_splitter/Models/Item.dart';
+import 'package:bill_splitter/Models/Providers/ItemsList.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ItemList extends StatelessWidget{
-  List<Item> items;
-  ItemList(this.items, {Key key}) : super(key: key);
+  ItemList({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    var itemsList = Provider.of<ItemsList>(context, listen: true);
+      
     return ListView.builder(
-      itemCount: items.length,
+      itemCount: itemsList.list.length,
       itemBuilder: (context, index) {
-        var item = items[index];
+        var item = itemsList.list[index];
         return ListTile(
           key: UniqueKey(),
           title: Text("${item.name}"),
