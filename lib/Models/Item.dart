@@ -8,8 +8,12 @@ class Item {
   String name = "";
   double price = 0.0;
 
-  List<Person> peopleWhoPaidForIt = [];
-  List<Person> peopleWhoWantIt = [];
+  List<Person> payers = [];
+  List<Person> participants = [];
 
   Item() {}
+  Item.fromBasics(String name, double price) {
+    this.name = name;
+    this.price = price;
+  }
 }

@@ -1,5 +1,7 @@
 import 'package:bill_splitter/Dialogs/DialogAddPerson.dart';
+import 'package:bill_splitter/Models/Item.dart';
 import 'package:bill_splitter/Widgets/UserList.dart';
+import 'package:bill_splitter/widgets/ItemList.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -30,6 +32,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<String> peopleAdded = ["heyasd", "hey qeu asd", "dasdada"];
+  List<Item> allItems = [
+    Item.fromBasics("cosa", 10),
+    Item.fromBasics("cosa 2", 30),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +43,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Container(
-        child: UserList(peopleAdded),
-      ),
+      body:ItemList(allItems),
       floatingActionButton: FloatingActionButton(
         // onPressed: _showAddPeopleDialog,
         onPressed: _showAddPeopleDialog,
@@ -58,7 +62,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void addPerson(personNameToAdd) {
     setState(() {
-      peopleAdded.add(personNameToAdd);  
+      peopleAdded.add(personNameToAdd);
     });
   }
 }
