@@ -1,17 +1,19 @@
+import 'package:bill_splitter/Models/Item.dart';
 import 'package:bill_splitter/Models/Person.dart';
+import 'package:bill_splitter/Models/Providers/ItemsList.dart';
 import 'package:bill_splitter/Models/Providers/PeopleList.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class DialogAddPerson extends StatefulWidget {
-  DialogAddPerson({Key key}) : super(key: key);
+class DialogAddItem extends StatefulWidget {
+  DialogAddItem({Key key}) : super(key: key);
 
   @override
-  _DialogAddPersonState createState() => _DialogAddPersonState();
+  _DialogAddPersoItem createState() => _DialogAddPersoItem();
 }
 
-class _DialogAddPersonState extends State<DialogAddPerson> {
-  Person personToAdd = Person();
+class _DialogAddPersoItem extends State<DialogAddItem> {
+  Item itemToAdd = Item();
   
   @override
   Widget build(BuildContext context) {
@@ -21,10 +23,18 @@ class _DialogAddPersonState extends State<DialogAddPerson> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            new Text("Introduce the new person"),
+            new Text("Name"),
             TextField(
               onChanged: (text) {
-                personToAdd.name =  text;
+                itemToAdd.name =  text;
+              },
+            ),
+            new Text("Price"),
+            TextField(
+              keyboardType: TextInputType.number,
+              onChanged: (text) {
+                text = text.replaceAll(",", ".");
+                itemToAdd.price = double.parse(text);
               },
             ),
           ],
@@ -38,9 +48,10 @@ class _DialogAddPersonState extends State<DialogAddPerson> {
           },
         ),
         ElevatedButton(
-          child: Text('Add person!'),
+          child: Text('Add Item!'),
           onPressed: () {
-            Provider.of<PeopleList>(context, listen: false).addToList(personToAdd);
+            print(itemToAdd.price);
+            Provider.of<ItemsList>(context, listen: false).addToList(itemToAdd);
             Navigator.of(context).pop();
           },
         ),

@@ -1,12 +1,11 @@
-import 'package:bill_splitter/Dialogs/DialogAddPerson.dart';
-import 'package:bill_splitter/widgets/ItemList.dart';
+import 'package:bill_splitter/Dialogs/DialogAddItem.dart';
+import 'package:bill_splitter/Models/Providers/ItemsList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class ViewItemsList extends StatefulWidget {
-  ViewItemsList({Key key, this.title}) : super(key: key);
-
-  final String title;
+  ViewItemsList({Key key}) : super(key: key);
 
   @override
   _ViewItemsListState createState() => _ViewItemsListState();
@@ -16,20 +15,34 @@ class _ViewItemsListState extends State<ViewItemsList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: ItemList(),
+    var itemsList = Provider.of<ItemsList>(context, listen: true);
 
-      
+    return Scaffold(
+      appBar: AppBar(title: Text("Items List")),
+      body: ListView.builder(
+        itemCount: itemsList.list.length,
+        itemBuilder: (context, index) {
+          var item = itemsList.list[index];
+          return ListTile(
+            key: UniqueKey(),
+            title: Text("${item.name}"),
+            trailing: Text("${item.price.toString()}€"),
+          );
+        },
+      ),
+
       floatingActionButton: FloatingActionButton(
-        onPressed: _showAddPeopleDialog,
+        onPressed: _showAddItemDialog,
         tooltip: 'Add new Item',
         child: Icon(Icons.add),
       ),
     );
   }
 
-  void _showAddPeopleDialog() {
-    
+  void _showAddItemDialog() {
+     showDialog(
+      context: context,
+      builder: (_) => DialogAddItem(),
+    );
   }
 }

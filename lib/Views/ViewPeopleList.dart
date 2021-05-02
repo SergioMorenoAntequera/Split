@@ -31,6 +31,7 @@ class _ViewPeopleListState extends State<ViewPeopleList> {
           );
         },
       ),
+      
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddPeopleDialog,
         tooltip: 'Add new people',

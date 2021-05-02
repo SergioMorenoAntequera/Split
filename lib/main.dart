@@ -1,4 +1,3 @@
-import 'package:bill_splitter/Dialogs/DialogAddPerson.dart';
 import 'package:bill_splitter/Models/Providers/ItemsList.dart';
 import 'package:bill_splitter/Models/Providers/PeopleList.dart';
 import 'package:bill_splitter/Views/ViewItemsList.dart';
@@ -25,7 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: ViewPeopleList(),
+      home: ViewItemsList(),
     );
   }
 }
