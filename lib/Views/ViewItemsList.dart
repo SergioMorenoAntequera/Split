@@ -58,7 +58,7 @@ class _ViewItemsListState extends State<ViewItemsList> {
             },
           );
         },
-      ),  
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddItemDialog,
         tooltip: 'Add new Item',
@@ -69,16 +69,18 @@ class _ViewItemsListState extends State<ViewItemsList> {
 
   void toggleParticipant(Item baseItem, Person personParticipating) {
     var newParticipation = Participation.fromPerson(personParticipating);
+
     setState(() {
-      
       var found = baseItem.participations.firstWhere(
         (e) => e.person.name == personParticipating.name,
         orElse: () => Participation(),
       );
-      if(found.person.name != ""){
+      if (found.person.name != "") {
         baseItem.participations.remove(found);
+        return false;
       } else {
         baseItem.participations.add(newParticipation);
+        return true;
       }
     });
   }

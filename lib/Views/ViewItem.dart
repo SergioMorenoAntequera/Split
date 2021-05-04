@@ -23,59 +23,70 @@ class _ViewItemState extends State<ViewItem> {
     final priceController = TextEditingController();
     priceController.text = widget.item.price.toString();
 
-    var availablePeople = Provider.of<PeopleList>(context, listen: true);
+    var auxAvailablePeople = Provider.of<PeopleList>(context, listen: false);
+    var availablePeople = [];
+    auxAvailablePeople.list.forEach((element) {
+      availablePeople.add(element);
+    });
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Editing item"),
-        ),
-        body: Container(
-          margin: EdgeInsets.all(30),
-          child: Column(
-            children: [
-              TextField(
-                controller: nameController,
-              ),
-              TextField(
-                keyboardType: TextInputType.number,
-                controller: priceController,
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text("People involved"),
-                margin: EdgeInsets.only(top: 50),
-              ),
-              Container(
-                height: 200.0,
-                child: ListView.builder(
-                  itemCount: availablePeople.list.length,
-                  itemBuilder: (context, index) {
-                    var person = availablePeople.list[index];
+      appBar: AppBar(
+        title: Text("Editing item"),
+      ),
+      body: Container(
+        margin: EdgeInsets.all(30),
+        child: Column(
+          children: [
+            TextField(
+              controller: nameController,
+            ),
+            TextField(
+              keyboardType: TextInputType.number,
+              controller: priceController,
+            ),
+            // The fucking lsit
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Text("People involved"),
+              margin: EdgeInsets.only(top: 50),
+            ),
+            Container(
+              height: 200.0,
+              child: ListView.builder(
+                itemCount: availablePeople.length,
+                itemBuilder: (context, index) {
+                  var person = availablePeople[index];
 
-                    return ListTile(
-                      key: UniqueKey(),
-                      title: Text("${person.name}"),
-                      trailing: person.selected
-                          ? Icon(Icons.check)
-                          : Container(child: Text("")),
-                      onTap: () {
-                        setState(() {
-                          person.selected = !person.selected;
-                        });
-                        widget.toggleParticipant(widget.item, person);
-                      },
-                    );
-                  },
-                ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  widget.item.name = nameController.text;
+                  return ListTile(
+                    key: UniqueKey(),
+                    title: Text("${person.name}"),
+                    trailing: findParticipantInItem(person)
+                        ? Icon(Icons.check)
+                        : Container(child: Text("")),
+                    onTap: () {
+                      // setState(() {
+                      //   person.selected = !person.selected;
+                      // });
+                      widget.toggleParticipant(widget.item, person);
+                    },
+                  );
                 },
-                child: Text("Save changes"),
               ),
-            ],
-          ),
-        ));
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  bool findParticipantInItem(Person participant) {
+    widget.item.participations.forEach((participation) {
+      if (participation.person.name == participant.name) {
+        print("true");
+        return true;
+      }
+    });
+    print("false");
+    return false;
   }
 }

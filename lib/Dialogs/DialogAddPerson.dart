@@ -12,7 +12,7 @@ class DialogAddPerson extends StatefulWidget {
 
 class _DialogAddPersonState extends State<DialogAddPerson> {
   Person personToAdd = Person();
-  
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -24,7 +24,7 @@ class _DialogAddPersonState extends State<DialogAddPerson> {
             new Text("Introduce the new person"),
             TextField(
               onChanged: (text) {
-                personToAdd.name =  text;
+                personToAdd.name = text;
               },
             ),
           ],
@@ -40,7 +40,8 @@ class _DialogAddPersonState extends State<DialogAddPerson> {
         ElevatedButton(
           child: Text('Add person!'),
           onPressed: () {
-            Provider.of<PeopleList>(context, listen: false).addToList(personToAdd);
+            Provider.of<PeopleList>(context, listen: false)
+                .addToList(personToAdd);
             Navigator.of(context).pop();
           },
         ),

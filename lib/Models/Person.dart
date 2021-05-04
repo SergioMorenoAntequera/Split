@@ -1,4 +1,4 @@
-class Person{
+class Person {
   String name = "";
   bool selected = false;
 
