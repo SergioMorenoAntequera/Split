@@ -15,6 +15,13 @@ class ViewItem extends StatefulWidget {
   _ViewItemState createState() => _ViewItemState();
 }
 
+class PersonReference {
+  bool selected = false;
+  String name = "";
+
+  PersonReference(this.selected, this.name);
+}
+
 class _ViewItemState extends State<ViewItem> {
   @override
   Widget build(BuildContext context) {
@@ -23,10 +30,11 @@ class _ViewItemState extends State<ViewItem> {
     final priceController = TextEditingController();
     priceController.text = widget.item.price.toString();
 
-    var auxAvailablePeople = Provider.of<PeopleList>(context, listen: false);
-    var availablePeople = [];
-    auxAvailablePeople.list.forEach((element) {
-      availablePeople.add(element);
+    var peopleList = Provider.of<PeopleList>(context, listen: false);
+    List<PersonReference> availablePeople = [];
+    peopleList.list.forEach((element) {
+      print("temita");
+      availablePeople.add(new PersonReference(false, element.name));
     });
 
     return Scaffold(
@@ -56,18 +64,24 @@ class _ViewItemState extends State<ViewItem> {
                 itemCount: availablePeople.length,
                 itemBuilder: (context, index) {
                   var person = availablePeople[index];
-
                   return ListTile(
                     key: UniqueKey(),
                     title: Text("${person.name}"),
-                    trailing: findParticipantInItem(person)
+                    trailing: person.selected
                         ? Icon(Icons.check)
                         : Container(child: Text("")),
                     onTap: () {
+                      int index = availablePeople.indexOf(person);
+
+                      setState(() {
+                        availablePeople[index].name = "AAAAAAAAA";
+                      });
+                      print(availablePeople[index].name);
                       // setState(() {
-                      //   person.selected = !person.selected;
+                      //   availablePeople[index].selected =
+                      //       !availablePeople[index].selected;
+                      //   print(availablePeople[index].selected);
                       // });
-                      widget.toggleParticipant(widget.item, person);
                     },
                   );
                 },
@@ -77,16 +91,5 @@ class _ViewItemState extends State<ViewItem> {
         ),
       ),
     );
-  }
-
-  bool findParticipantInItem(Person participant) {
-    widget.item.participations.forEach((participation) {
-      if (participation.person.name == participant.name) {
-        print("true");
-        return true;
-      }
-    });
-    print("false");
-    return false;
   }
 }
