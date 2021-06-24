@@ -1,4 +1,5 @@
 import 'package:bill_splitter/Dialogs/DialogAddItem.dart';
+import 'package:bill_splitter/Dialogs/DialogAddPaid.dart';
 import 'package:bill_splitter/Models/Item.dart';
 import 'package:bill_splitter/Models/Participation.dart';
 import 'package:bill_splitter/Models/Person.dart';
@@ -53,7 +54,8 @@ class _ViewItemsListState extends State<ViewItemsList> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ViewItem(item, toggleParticipant)),
+                    builder: (context) => ViewItem(
+                        item, toggleParticipant, showAddPaidMoneyDialog)),
               ),
             },
           );
@@ -83,6 +85,16 @@ class _ViewItemsListState extends State<ViewItemsList> {
         return true;
       }
     });
+  }
+
+  void showAddPaidMoneyDialog(
+    Participation participation,
+    Function updatePaid,
+  ) {
+    showDialog(
+      context: context,
+      builder: (_) => DialogAddPaid(participation, updatePaid),
+    );
   }
 
   void _showAddItemDialog() {

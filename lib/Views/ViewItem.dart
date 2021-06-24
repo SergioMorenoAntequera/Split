@@ -1,4 +1,5 @@
 import 'package:bill_splitter/Models/Item.dart';
+import 'package:bill_splitter/Models/Participation.dart';
 import 'package:bill_splitter/Models/Providers/PeopleList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +8,11 @@ import 'package:provider/provider.dart';
 class ViewItem extends StatefulWidget {
   Item item = new Item();
   Function toggleParticipant;
+  Function showAddPaidMoneyDialog;
 
-  ViewItem(this.item, this.toggleParticipant, {Key key}) : super(key: key);
+  ViewItem(this.item, this.toggleParticipant, this.showAddPaidMoneyDialog,
+      {Key key})
+      : super(key: key);
 
   @override
   _ViewItemState createState() => _ViewItemState();
@@ -39,7 +43,16 @@ class _ViewItemState extends State<ViewItem> {
               keyboardType: TextInputType.number,
               controller: priceController,
             ),
-            // The fucking lsit
+            ElevatedButton(
+              child: new Text('Split Evenly'),
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(
+                    widget.item.splitEvenly ? Colors.grey : Colors.blue),
+              ),
+              onPressed: () => setState(
+                  () => widget.item.splitEvenly = !widget.item.splitEvenly),
+            ),
+            // The  lsit
             Container(
               alignment: Alignment.centerLeft,
               child: Text("People involved"),
@@ -53,14 +66,40 @@ class _ViewItemState extends State<ViewItem> {
                   var person = peopleList.list[index];
                   return ListTile(
                     key: UniqueKey(),
-                    title: Text("${person.name}"),
-                    trailing: widget.item.checkForParticipant(person.name)
+                    title: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("${person.name}"),
+                          Row(
+                            children: [
+                              Text(
+                                "${widget.item.checkParticipation(person.name).toPay}",
+                                style: TextStyle(color: Colors.red),
+                              ),
+                              Container(width: 10),
+                              Text(
+                                "${widget.item.checkParticipation(person.name).paid}",
+                                style: TextStyle(color: Colors.green),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    trailing: widget.item.checkParticipant(person.name)
                         ? Icon(Icons.check)
-                        : Container(child: Text("")),
+                        : Icon(Icons.clear_rounded),
                     onTap: () {
                       setState(() {
                         widget.toggleParticipant(widget.item, person);
                       });
+                    },
+                    onLongPress: () {
+                      widget.showAddPaidMoneyDialog(
+                        widget.item.checkParticipation(person.name),
+                        updatePaid,
+                      );
                     },
                   );
                 },
@@ -70,5 +109,11 @@ class _ViewItemState extends State<ViewItem> {
         ),
       ),
     );
+  }
+
+  void updatePaid(Participation participation, double moneyPaid) {
+    setState(() {
+      participation.paid = moneyPaid;
+    });
   }
 }

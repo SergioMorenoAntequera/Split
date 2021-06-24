@@ -4,6 +4,7 @@ import 'package:bill_splitter/Models/Person.dart';
 class Item {
   String name = "";
   double price = 0.0;
+  bool splitEvenly = true;
 
   List<Participation> participations = [];
 
@@ -13,7 +14,22 @@ class Item {
     this.price = price;
   }
 
-  bool checkForParticipant(String nameToFind) {
+  bool checkParticipant(String nameToFind) {
     return this.participations.map((e) => e.person.name).contains(nameToFind);
+  }
+
+  Participation checkParticipation(String personName) {
+    Participation auxPercentage = Participation();
+    this.participations.forEach((element) {
+      if (element.person.name == personName) {
+        auxPercentage = element;
+      }
+    });
+    return auxPercentage;
+  }
+
+  void sharePrice() {
+    if (!splitEvenly) return;
+    var pricePerPerson = price / participations.length;
   }
 }

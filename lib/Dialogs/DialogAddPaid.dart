@@ -1,17 +1,22 @@
 import 'package:bill_splitter/Models/Item.dart';
+import 'package:bill_splitter/Models/Participation.dart';
 import 'package:bill_splitter/Models/Providers/ItemsList.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class DialogAddItem extends StatefulWidget {
-  DialogAddItem({Key key}) : super(key: key);
+class DialogAddPaid extends StatefulWidget {
+  Participation particpation;
+  Function updatePaid;
+
+  DialogAddPaid(this.particpation, this.updatePaid, {Key key})
+      : super(key: key);
 
   @override
-  _DialogAddPersoItem createState() => _DialogAddPersoItem();
+  _DialogAddPaid createState() => _DialogAddPaid();
 }
 
-class _DialogAddPersoItem extends State<DialogAddItem> {
-  Item itemToAdd = Item();
+class _DialogAddPaid extends State<DialogAddPaid> {
+  var value = 0.0;
 
   @override
   Widget build(BuildContext context) {
@@ -21,18 +26,14 @@ class _DialogAddPersoItem extends State<DialogAddItem> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            new Text("Name"),
-            TextField(
-              onChanged: (text) {
-                itemToAdd.name = text;
-              },
-            ),
-            new Text("Price"),
+            new Text("Amount paid"),
             TextField(
               keyboardType: TextInputType.number,
               onChanged: (text) {
-                text = text.replaceAll(",", ".");
-                itemToAdd.price = double.parse(text);
+                setState(() {
+                  text = text.replaceAll(",", ".");
+                  value = double.parse(text);
+                });
               },
             ),
           ],
@@ -46,10 +47,15 @@ class _DialogAddPersoItem extends State<DialogAddItem> {
           },
         ),
         ElevatedButton(
-          child: Text('Add Item!'),
+          child: Text('Confirm!'),
           onPressed: () {
-            print(itemToAdd.price);
-            Provider.of<ItemsList>(context, listen: false).addToList(itemToAdd);
+            print(value);
+            setState(() {
+              widget.updatePaid(
+                widget.particpation,
+                value,
+              );
+            });
             Navigator.of(context).pop();
           },
         ),
