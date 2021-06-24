@@ -1,5 +1,4 @@
 import 'package:bill_splitter/Models/Item.dart';
-import 'package:bill_splitter/Models/Person.dart';
 import 'package:bill_splitter/Models/Providers/PeopleList.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +14,6 @@ class ViewItem extends StatefulWidget {
   _ViewItemState createState() => _ViewItemState();
 }
 
-class PersonReference {
-  bool selected = false;
-  String name = "";
-
-  PersonReference(this.selected, this.name);
-}
-
 class _ViewItemState extends State<ViewItem> {
   @override
   Widget build(BuildContext context) {
@@ -31,11 +23,6 @@ class _ViewItemState extends State<ViewItem> {
     priceController.text = widget.item.price.toString();
 
     var peopleList = Provider.of<PeopleList>(context, listen: false);
-    List<PersonReference> availablePeople = [];
-    peopleList.list.forEach((element) {
-      print("temita");
-      availablePeople.add(new PersonReference(false, element.name));
-    });
 
     return Scaffold(
       appBar: AppBar(
@@ -61,27 +48,19 @@ class _ViewItemState extends State<ViewItem> {
             Container(
               height: 200.0,
               child: ListView.builder(
-                itemCount: availablePeople.length,
+                itemCount: peopleList.list.length,
                 itemBuilder: (context, index) {
-                  var person = availablePeople[index];
+                  var person = peopleList.list[index];
                   return ListTile(
                     key: UniqueKey(),
                     title: Text("${person.name}"),
-                    trailing: person.selected
+                    trailing: widget.item.checkForParticipant(person.name)
                         ? Icon(Icons.check)
                         : Container(child: Text("")),
                     onTap: () {
-                      int index = availablePeople.indexOf(person);
-
                       setState(() {
-                        availablePeople[index].name = "AAAAAAAAA";
+                        widget.toggleParticipant(widget.item, person);
                       });
-                      print(availablePeople[index].name);
-                      // setState(() {
-                      //   availablePeople[index].selected =
-                      //       !availablePeople[index].selected;
-                      //   print(availablePeople[index].selected);
-                      // });
                     },
                   );
                 },
