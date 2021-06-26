@@ -56,6 +56,7 @@ class _DialogAddPaid extends State<DialogAddPaid> {
                 value,
               );
             });
+            print(widget.particpation.paid);
             Navigator.of(context).pop();
           },
         ),

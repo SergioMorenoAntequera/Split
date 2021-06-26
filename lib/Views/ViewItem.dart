@@ -43,15 +43,15 @@ class _ViewItemState extends State<ViewItem> {
               keyboardType: TextInputType.number,
               controller: priceController,
             ),
+
             ElevatedButton(
-              child: new Text('Split Evenly'),
+              child: new Text('Calculate Split'),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    widget.item.splitEvenly ? Colors.grey : Colors.blue),
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
               ),
-              onPressed: () => setState(
-                  () => widget.item.splitEvenly = !widget.item.splitEvenly),
+              onPressed: () => {calculateSplit(widget.item)},
             ),
+
             // The  lsit
             Container(
               alignment: Alignment.centerLeft,
@@ -64,6 +64,9 @@ class _ViewItemState extends State<ViewItem> {
                 itemCount: peopleList.list.length,
                 itemBuilder: (context, index) {
                   var person = peopleList.list[index];
+                  var isParticipating =
+                      widget.item.checkParticipant(person.name);
+
                   return ListTile(
                     key: UniqueKey(),
                     title: Container(
@@ -71,23 +74,25 @@ class _ViewItemState extends State<ViewItem> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text("${person.name}"),
-                          Row(
-                            children: [
-                              Text(
-                                "${widget.item.checkParticipation(person.name).toPay}",
-                                style: TextStyle(color: Colors.red),
-                              ),
-                              Container(width: 10),
-                              Text(
-                                "${widget.item.checkParticipation(person.name).paid}",
-                                style: TextStyle(color: Colors.green),
-                              )
-                            ],
-                          ),
+                          isParticipating
+                              ? Row(
+                                  children: [
+                                    Text(
+                                      "${widget.item.checkParticipation(person.name).toPay.toStringAsFixed(2)}",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                    Container(width: 10),
+                                    Text(
+                                      "${widget.item.checkParticipation(person.name).paid.toStringAsFixed(2)}",
+                                      style: TextStyle(color: Colors.green),
+                                    )
+                                  ],
+                                )
+                              : Container()
                         ],
                       ),
                     ),
-                    trailing: widget.item.checkParticipant(person.name)
+                    trailing: isParticipating
                         ? Icon(Icons.check)
                         : Icon(Icons.clear_rounded),
                     onTap: () {
@@ -96,10 +101,12 @@ class _ViewItemState extends State<ViewItem> {
                       });
                     },
                     onLongPress: () {
-                      widget.showAddPaidMoneyDialog(
-                        widget.item.checkParticipation(person.name),
-                        updatePaid,
-                      );
+                      if (isParticipating) {
+                        widget.showAddPaidMoneyDialog(
+                          widget.item.checkParticipation(person.name),
+                          updatePaid,
+                        );
+                      }
                     },
                   );
                 },
@@ -114,6 +121,36 @@ class _ViewItemState extends State<ViewItem> {
   void updatePaid(Participation participation, double moneyPaid) {
     setState(() {
       participation.paid = moneyPaid;
+    });
+  }
+
+  void calculateSplit(Item item) {
+    setState(() {
+      var perPerson = item.price / item.participations.length;
+
+      item.participations.forEach((defaulter) {
+        defaulter.toPay = defaulter.paid - perPerson;
+
+        if (defaulter.toPay < 0) {
+          item.participations.forEach((participant) {
+            participant.toPay = participant.paid - perPerson;
+            if (participant.paid > perPerson) {
+              // El moroso paga
+              // if (-defaulter.toPay > perPerson) {
+              //   print(defaulter.person.name +
+              //       " paga $perPerson a " +
+              //       participant.person.name);
+              //   defaulter.toPay -= perPerson;
+              // } else {
+              //   print(defaulter.person.name +
+              //       " paga ${defaulter.toPay} a " +
+              //       participant.person.name);
+              //   defaulter.toPay = 0;
+              // }
+            }
+          });
+        }
+      });
     });
   }
 }
